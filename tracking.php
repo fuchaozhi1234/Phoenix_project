@@ -135,29 +135,6 @@ if(isset($_POST['tracking_number'])) {
             </div><!-- /.container-fluid -->
         </nav>
     </header><!-- Navigation -->
-	<div class="carousel  slide  js-jumbotron-slider" id="headerCarousel" data-ride="carousel" data-interval="5000">
-		<!-- Wrapper for slides -->
-		<div class="carousel-inner">
-			<div class="item">
-				<img src="images/xslider_1.jpg" width="1920" height="600">
-			</div>
-			<div class="item">
-				<img src="images/xslider_2.jpg" width="1920" height="600">
-			</div>
-			<div class="item active">
-				<img src="images/xslider_3.jpg" width="1920" height="600">
-			</div>
-		</div>
-		<div class="container">
-			<!-- Controls -->
-			<a class="left  jumbotron__control" href="#headerCarousel" role="button" data-slide="prev">
-				<i class="fa  fa-caret-left"></i>
-			</a>
-			<a class="right  jumbotron__control" href="#headerCarousel" role="button" data-slide="next">
-				<i class="fa  fa-caret-right"></i>
-			</a>
-		</div>
-	</div>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8">
