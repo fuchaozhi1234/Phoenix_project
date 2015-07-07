@@ -48,7 +48,7 @@ class uploads_controller extends controller {
             $this->model_uploads->delete($this->db, $this->request->get);
         }
 
-        redirect_model("uploads");
+        redirect($_SERVER["HTTP_REFERER"]);
     }
 /*
     private function get_form() {

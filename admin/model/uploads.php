@@ -27,6 +27,10 @@ class uploads extends model {
     public function get_list_count($db, $data) {
         $sql = "SELECT count(*) AS count FROM " . DB_PREFIX . "uploads";
 
+		if(isset($data['keyword']) && !empty($data['keyword'])) {
+			$sql = $sql . " WHERE tracking_number LIKE '%{$data['keyword']}%' OR name LIKE '%{$data['keyword']}%' OR identity LIKE '%{$data['keyword']}%'";
+		}
+
         $result = $db->query($sql);
 
         return $result->rows[0]['count'];
@@ -35,6 +39,10 @@ class uploads extends model {
     public function get_list($db, $data) {
         $sql = "SELECT * FROM " . DB_PREFIX . "uploads";
 
+		if(isset($data['keyword']) && !empty($data['keyword'])) {
+			$sql = $sql . " WHERE tracking_number LIKE '%{$data['keyword']}%' OR name LIKE '%{$data['keyword']}%' OR identity LIKE '%{$data['keyword']}%'";
+		}
+
         if(isset($data['orderby'])) {
             $sql = $sql . " ORDER BY " . $data['orderby'];
             if(isset($data['order'])) {
@@ -42,7 +50,9 @@ class uploads extends model {
             } else {
                 $sql = $sql . " DESC";
             }
-        }
+        } else {
+			$sql = $sql . " ORDER BY id DESC";
+		}
 
         if(isset($data['page'])) {
             $sql = $sql . " LIMIT " . ($data['page'] - 1) * 50 . ",50";

@@ -18,8 +18,8 @@ class waybill_controller extends controller {
     public function index() {
         $this->get_form();
         $this->data['primary'] = 'id';
-        $this->data['count'] = $this->model_waybill->get_list_count($this->db, null);
-        $this->data['list'] = $this->model_waybill->get_list($this->db, $this->request->get);
+		$this->data['count'] = $this->model_waybill->get_list_count($this->db, $this->request->get);
+		$this->data['list'] = $this->model_waybill->get_list($this->db, $this->request->get);
         $this->data['page'] = isset($this->request->get['page']) ? pager($this->data['count'], "index.php?model=waybill", $this->request->get['page']) : pager($this->data['count'], "index.php?model=waybill");
         $this->load("waybill/list");
     }
@@ -41,7 +41,7 @@ class waybill_controller extends controller {
         $this->get_form();
         if($this->request->server['REQUEST_METHOD'] == "POST" && !$this->validate($this->request->post, true)) {
             $this->model_waybill->update($this->db, $this->request->post);
-            redirect_model("waybill");
+            redirect($_SERVER["HTTP_REFERER"]);
         } else {
             $this->data['log'] = $this->model_log->get_list_by_waybill($this->db, $this->request->get);
             $this->preload = $this->model_waybill->get($this->db, $this->request->get);
@@ -55,7 +55,7 @@ class waybill_controller extends controller {
             $this->model_waybill->delete($this->db, $this->request->get);
         }
 
-        redirect_model("waybill");
+        redirect($_SERVER["HTTP_REFERER"]);
     }
 
     public function log() {
@@ -68,7 +68,7 @@ class waybill_controller extends controller {
 			);
         }
 
-        redirect_model("waybill");
+        redirect($_SERVER["HTTP_REFERER"]);
     }
 
     public function delete_log() {
@@ -79,7 +79,34 @@ class waybill_controller extends controller {
 			);
         }
 
-        redirect_model("waybill");
+        redirect($_SERVER["HTTP_REFERER"]);
+    }
+
+    public function batch_delete() {
+        if($this->request->server['REQUEST_METHOD'] == "POST") {
+			foreach($this->request->post['select'] as $id) {
+				$this->model_waybill->delete($this->db, array('id' => $id));
+			}
+        }
+
+        redirect($_SERVER["HTTP_REFERER"]);
+    }
+
+    public function batch_log($content) {
+        if($this->request->server['REQUEST_METHOD'] == "POST") {
+			foreach($this->request->post['select'] as $id) {
+				$tracking_number = $this->model_waybill->get_tracking_number_by_id($this->db, $id);
+				
+				$this->model_log->insert($this->db, array(
+						'waybill_id' => $id,
+						'tracking_number' => $tracking_number,
+						'content' => $content
+					)
+				);
+			}
+        }
+
+        redirect($_SERVER["HTTP_REFERER"]);
     }
 
     private function get_form() {
@@ -382,6 +409,38 @@ class waybill_controller extends controller {
 
             case 'delete_log':
                 $this->delete_log();
+                break;
+
+            case 'batch_delete':
+                $this->batch_delete();
+                break;
+
+            case 'batch_log_a':
+                $this->batch_log("已入凤凰仓库");
+                break;
+
+            case 'batch_log_b':
+                $this->batch_log("航班已起飞");
+                break;
+
+            case 'batch_log_c':
+                $this->batch_log("航班已到达");
+                break;
+
+            case 'batch_log_d':
+                $this->batch_log("等待海关清关");
+                break;
+
+            case 'batch_log_e':
+                $this->batch_log("海关已清关");
+                break;
+
+            case 'batch_log_f':
+                $this->batch_log("正在派送");
+                break;
+
+            case 'batch_log_g':
+                $this->batch_log("收货人签收");
                 break;
 
             default:

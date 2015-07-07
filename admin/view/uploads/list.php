@@ -5,6 +5,23 @@
         </div>
         <!-- /.col-lg-12 -->
     </div>
+    <div class="row">
+        <div class="col-lg-6">
+        </div>
+        <div class="col-lg-6">
+			<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="get">
+            <div class="input-group custom-search-form">
+                <input type="hidden" name="model" value="uploads">
+                <input type="text" class="form-control" name="keyword" placeholder="Search...">
+                <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+                </span>
+            </div>
+			</form>
+        </div>
+    </div>
     <div class="row"><br></div>
     <div class="row">
         <div class="col-lg-12">

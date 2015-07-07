@@ -1,54 +1,62 @@
 <?php
-if(isset($_POST['id']) && isset($_POST['tracking_number']) && isset($_POST['name'])) {
-	$tracking_number = $_POST['tracking_number'];
-	$id = $_POST['id'];
-	$name = $_POST['name'];
+require_once('config.php');
 
-	$file_type_front = pathinfo($_FILES["id_front"]["name"], PATHINFO_EXTENSION);
-	$file_type_back = pathinfo($_FILES["id_back"]["name"], PATHINFO_EXTENSION);
-	$file_path_front = "uploads/id/" . $id . "_front.$file_type_front";
-	$file_path_back = "uploads/id/" . $id . "_back.$file_type_back";
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+	if(isset($_POST['id'])
+		&& isset($_POST['tracking_number']) && !empty($_POST['tracking_number'])
+		&& isset($_POST['name']) && !empty($_POST['name'])
+		&& !empty($_FILES["id_front"]["name"])
+		&& !empty($_FILES["id_back"]["name"])
+		) {
+		$tracking_number = $_POST['tracking_number'];
+		$id = $_POST['id'];
+		$name = $_POST['name'];
 
-	if (move_uploaded_file($_FILES["id_front"]["tmp_name"], $file_path_front)) {
-        $error = "The file ". basename( $_FILES["id_front"]["name"]). " has been uploaded.";
-    } else {
-        $error = "Sorry, there was an error uploading your file.";
-    }
+		$file_type_front = pathinfo($_FILES["id_front"]["name"], PATHINFO_EXTENSION);
+		$file_type_back = pathinfo($_FILES["id_back"]["name"], PATHINFO_EXTENSION);
+		$file_path_front = "uploads/id/" . $id . "_front.$file_type_front";
+		$file_path_back = "uploads/id/" . $id . "_back.$file_type_back";
 
-	if (move_uploaded_file($_FILES["id_back"]["tmp_name"], $file_path_back)) {
-        $error = "The file ". basename( $_FILES["id_front"]["name"]). " has been uploaded.";
-    } else {
-        $error = "Sorry, there was an error uploading your file.";
-    }
+		if (move_uploaded_file($_FILES["id_front"]["tmp_name"], $file_path_front)) {
+			$error = "The file ". basename( $_FILES["id_front"]["name"]). " has been uploaded.";
+		} else {
+			$error = "Sorry, there was an error uploading your file.";
+		}
 
-	$servername = "localhost";
-	$username = "phoenix_main";
-	$password = "123456!";
-	$dbname = "phoenix_main";
+		if (move_uploaded_file($_FILES["id_back"]["tmp_name"], $file_path_back)) {
+			$error = "The file ". basename( $_FILES["id_front"]["name"]). " has been uploaded.";
+		} else {
+			$error = "Sorry, there was an error uploading your file.";
+		}
 
-	// Create connection
-	$conn = new mysqli($servername, $username, $password, $dbname);
+		// Create connection
+		$conn = new mysqli($servername, $username, $password, $dbname);
 
-	// Check connection
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
+		// Check connection
+		if ($conn->connect_error) {
+			die("Connection failed: " . $conn->connect_error);
+		}
 
-	$sql = "SELECT `id` FROM `uploads` WHERE `identity`=$id";
-	
-	$result = $conn->query($sql);
-	
-	if($result->num_rows > 0) {
-		$sql = "UPDATE uploads SET frontside_photo='$file_path_front',backside_photo='$file_path_back' WHERE `identity`=$id";
-		$conn->query($sql);
+		$conn->set_charset("utf8");
+
+		$sql = "SELECT `id` FROM `uploads` WHERE `identity`=$id";
+		
+		$result = $conn->query($sql);
+		
+		if($result->num_rows > 0) {
+			$sql = "UPDATE uploads SET frontside_photo='$file_path_front',backside_photo='$file_path_back' WHERE `identity`=$id";
+			$conn->query($sql);
+		} else {
+			$sql = "INSERT INTO uploads (`identity`,`tracking_number`,`name`,`frontside_photo`,`backside_photo`) VALUES ('$id','$tracking_number','$name','$file_path_front','$file_path_back')";
+			$conn->query($sql);
+		}
+		
+		$message = "上传成功。";
+
+		$conn->close();
 	} else {
-		$sql = "INSERT INTO uploads (`identity`,`tracking_number`,`name`,`frontside_photo`,`backside_photo`) VALUES ('$id','$tracking_number','$name','$file_path_front','$file_path_back')";
-		$conn->query($sql);
+		$message = "上传失败。";
 	}
-	
-	$message = "上传成功。";
-
-	$conn->close();
 }
 ?>
 <!--DOCTYPE html -->

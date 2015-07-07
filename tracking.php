@@ -1,10 +1,8 @@
 <?php
+require_once('config.php');
+
 if(isset($_POST['tracking_number'])) {
 	$tracking_number = $_POST['tracking_number'];
-	$servername = "localhost";
-	$username = "phoenix_main";
-	$password = "123456!";
-	$dbname = "phoenix_main";
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $dbname);
@@ -38,7 +36,7 @@ if(isset($_POST['tracking_number'])) {
 	$conn->close();
 	
 	if(!empty($waybill) && !empty($code)) {
-		$content = file_get_contents("http://api.kuaidi100.com/api?id=63a8b4c04d8a9101&com=$code&nu=$waybill&show=2&muti=0&order=desc");
+		$content = file_get_contents("http://api.kuaidi100.com/api?id=63a8b4c04d8a9101&com=$code&nu=$waybill&show=2&order=asc");
 	}
 }
 ?>

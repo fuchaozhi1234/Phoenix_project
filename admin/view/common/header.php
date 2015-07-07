@@ -38,8 +38,17 @@
                         <li>
                             <a href="index.php?model=uploads">上传管理</a>
                         </li>
+                        <li>
+                            <a href="index.php?model=import">导入运单</a>
+                        </li>
+                        <li>
+                            <a href="index.php?model=export">导出运单</a>
+                        </li>
                     </ul>
                     <!-- /.nav-second-level -->
+                </li>
+                <li class="dropdown">
+                    <a href="index.php?model=waybill&action=insert"><i class="fa fa-plus"></i> 添加运单</a>
                 </li>
                 <li class="dropdown">
                     <a href="index.php?model=login&action=logout"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
